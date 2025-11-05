@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Validate required environment variables
-const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_NAME', 'JWT_SECRET'];
+const requiredEnvVars = ['DB_HOST', 'DB_NAME', 'JWT_SECRET'];
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingVars.length > 0) {
@@ -14,6 +14,11 @@ if (missingVars.length > 0) {
   console.error('\nPlease check your .env file in the backend directory.');
   console.error('See README.md for setup instructions.');
   process.exit(1);
+}
+
+// Warn if DB_USER is not set (defaults to empty string which MySQL may accept)
+if (!process.env.DB_USER) {
+  console.warn('⚠️  DB_USER is not set. Defaulting to empty string. This may not work with all MySQL configurations.');
 }
 
 const app = express();

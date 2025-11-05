@@ -89,7 +89,7 @@ cd GrandmasTable
 
    ```env
    DB_HOST=localhost
-   DB_USER=root
+   DB_USER=
    DB_PASSWORD=
    DB_NAME=grandmas_table
    JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
@@ -97,7 +97,8 @@ cd GrandmasTable
    ```
 
    **Important:** 
-   - Set `DB_PASSWORD` to your MySQL root password (leave empty if no password)
+   - Set `DB_USER` to your MySQL username (leave empty for default user)
+   - Set `DB_PASSWORD` to your MySQL password (leave empty if no password)
    - Generate a secure JWT_SECRET (see below)
 
 4. **Generate JWT_SECRET**
@@ -347,8 +348,8 @@ npm run preview    # Preview production build
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `DB_HOST` | MySQL host | Yes |
-| `DB_USER` | MySQL username | Yes |
-| `DB_PASSWORD` | MySQL password (leave empty if no password) | Yes |
+| `DB_USER` | MySQL username (leave empty for default user) | No |
+| `DB_PASSWORD` | MySQL password (leave empty if no password) | No |
 | `DB_NAME` | Database name | Yes |
 | `JWT_SECRET` | Secret key for JWT tokens (generate using methods in Step 3) | Yes |
 | `PORT` | Server port | No (default: 3000) |
