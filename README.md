@@ -288,10 +288,12 @@ See `backend/README.md` for detailed API documentation.
 
 ### Frontend Issues
 
-**Error: "Cannot connect to API"**
+**Error: "Cannot connect to API" or "ECONNREFUSED"**
+- **CRITICAL:** Ensure backend server is running! Start it with `cd backend && npm start`
 - Ensure backend server is running on port 3000
 - Check `frontend/vite.config.js` proxy configuration
 - Verify backend health endpoint: `http://localhost:3000/api/health`
+- If you see "ECONNREFUSED", the backend is not running - start it in a separate terminal
 
 **Error: "Module not found"**
 - Delete `node_modules` and `package-lock.json`

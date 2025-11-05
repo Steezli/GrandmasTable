@@ -165,5 +165,5 @@ export default {
     width: 100%;
   }
 }
-</script>
+</style>
 
