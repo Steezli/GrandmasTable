@@ -25,7 +25,6 @@ router.get('/', async (req, res, next) => {
         fm.role
       FROM families f
       INNER JOIN family_members fm ON f.id = fm.family_id
-      LEFT JOIN family_members fm2 ON f.id = fm2.family_id
       LEFT JOIN recipes r ON f.id = r.family_id AND r.deleted_at IS NULL
       WHERE fm.user_id = ?
       GROUP BY f.id, f.name, f.created_by, f.invite_code, fm.role`,

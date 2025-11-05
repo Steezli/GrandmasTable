@@ -1,6 +1,4 @@
-# Grandma's Table - Backend API
-
-Backend API for Grandma's Table recipe sharing application.
+# Grandma's Table Backend
 
 ## Setup
 
@@ -9,75 +7,96 @@ Backend API for Grandma's Table recipe sharing application.
 npm install
 ```
 
-2. Create `.env` file (copy from `.env.example`):
+2. Set up MySQL database:
 ```bash
-cp .env.example .env
+mysql -u root -p < migrations/001_initial_schema.sql
 ```
 
-3. Update `.env` with your database credentials:
+3. Create `.env` file:
 ```
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_password
 DB_NAME=grandmas_table
-DB_PORT=3306
-JWT_SECRET=your-super-secret-jwt-key
+JWT_SECRET=your_jwt_secret_key
+PORT=3000
 ```
 
-4. Create database and run migrations:
-```bash
-mysql -u root -p < migrations/001_initial_schema.sql
-```
-
-Or import the SQL file manually in your MySQL client.
-
-5. Start the server:
+4. Run the server:
 ```bash
 npm start
 ```
 
-For development with auto-reload:
-```bash
-npm run dev
+## API Documentation
+
+### Authentication Routes
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user (requires auth)
+- `GET /api/auth/me` - Get current user (requires auth)
+
+### Family Routes
+
+- `GET /api/families` - Get all families for current user (requires auth)
+- `POST /api/families` - Create a new family (requires auth)
+- `GET /api/families/:familyId` - Get family details (requires auth)
+- `PATCH /api/families/:familyId` - Update family (requires auth, admin only)
+- `POST /api/families/:familyId/invite` - Invite member via email (requires auth, admin only)
+- `POST /api/families/join` - Join family with invite code (requires auth)
+- `DELETE /api/families/:familyId/members/:userId` - Remove member (requires auth, admin or self)
+
+### Recipe Routes
+
+- `GET /api/families/:familyId/recipes` - Get recipes for a family (requires auth, family membership)
+- `POST /api/families/:familyId/recipes` - Create a new recipe (requires auth, family membership)
+- `GET /api/recipes/:recipeId` - Get recipe details (requires auth if private)
+- `GET /api/recipes/public/:slug` - Get public recipe by slug (no auth required)
+- `PATCH /api/recipes/:recipeId` - Update recipe (requires auth, creator only)
+- `DELETE /api/recipes/:recipeId` - Delete recipe (requires auth, creator only)
+- `GET /api/recipes/search` - Search recipes (requires auth)
+
+## Photo Upload
+
+**Current Implementation (MVP):**
+- Photos are uploaded as base64-encoded strings in the recipe creation/update payload
+- The `photos` array in the recipe payload contains objects with `photo_url` (base64 data URL), `is_primary`, and `order`
+- Photos are stored directly in the `recipe_photos` table with the base64 data URL as the `photo_url`
+
+**Future Implementation (v2):**
+- Implement separate photo upload route: `POST /api/recipes/:recipeId/photos`
+- Upload photos to file storage (S3, local filesystem, or CDN)
+- Store photo URLs (not base64) in the database
+- Support multipart/form-data uploads with proper file validation
+
+**Why Base64 for MVP:**
+- Simpler implementation
+- No need for file storage infrastructure
+- Works for MVP with reasonable file sizes
+- Can be migrated to file uploads in v2 without breaking changes
+
+## Database Schema
+
+See `migrations/001_initial_schema.sql` for the complete database schema.
+
+## Error Handling
+
+All errors follow this format:
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": {}
+  }
+}
 ```
 
-## API Endpoints
+## Authentication
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/logout` - Logout user
-- `GET /api/auth/me` - Get current user
+All protected routes require a JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
 
-### Families
-- `GET /api/families` - Get all families for current user
-- `POST /api/families` - Create a new family
-- `GET /api/families/:familyId` - Get family details
-- `PATCH /api/families/:familyId` - Update family (admin only)
-- `POST /api/families/:familyId/invite` - Generate invite code/link (admin only)
-- `POST /api/families/join` - Join family using invite code
-- `DELETE /api/families/:familyId/members/:userId` - Remove member (admin or self)
-
-### Recipes
-- `GET /api/families/:familyId/recipes` - Get recipes for a family (with pagination, search, filters)
-- `GET /api/recipes/:recipeId` - Get recipe by ID (requires family membership or public)
-- `GET /api/recipes/public/:slug` - Get public recipe by slug (no auth required)
-- `POST /api/families/:familyId/recipes` - Create recipe (requires family membership)
-- `PATCH /api/recipes/:recipeId` - Update recipe (creator only)
-- `DELETE /api/recipes/:recipeId` - Soft delete recipe (creator only)
-- `GET /api/recipes/search` - Search recipes (family member or public)
-
-## Environment Variables
-
-- `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment (development/production)
-- `DB_HOST` - Database host
-- `DB_USER` - Database user
-- `DB_PASSWORD` - Database password
-- `DB_NAME` - Database name
-- `DB_PORT` - Database port
-- `JWT_SECRET` - JWT secret key
-- `JWT_EXPIRES_IN` - JWT expiration (default: 7d)
-- `MAX_FILE_SIZE` - Max file upload size in bytes (default: 5242880 = 5MB)
-- `UPLOAD_DIR` - Upload directory (default: ./uploads)
-
+Tokens are obtained via `/api/auth/login` or `/api/auth/register`.

@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue';
 import Toast from './Toast.vue';
 
 export default {
@@ -49,13 +50,17 @@ export default {
     }
   },
   mounted() {
-    // Make toast methods available globally
-    this.$app.config.globalProperties.$toast = {
-      success: this.success,
-      error: this.error,
-      info: this.info,
-      warning: this.warning
-    };
+    // Make toast methods available globally via Vue's global properties
+    // This is set up in App.vue, but we also ensure it's available here
+    const instance = getCurrentInstance();
+    if (instance && instance.appContext) {
+      instance.appContext.config.globalProperties.$toast = {
+        success: this.success.bind(this),
+        error: this.error.bind(this),
+        info: this.info.bind(this),
+        warning: this.warning.bind(this)
+      };
+    }
   }
 };
 </script>

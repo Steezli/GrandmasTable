@@ -29,7 +29,7 @@ const routes = [
     path: '/recipes/:id',
     name: 'RecipeDetail',
     component: () => import('../views/RecipeDetail.vue'),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false } // Allow public recipes
   },
   {
     path: '/recipes/new',
