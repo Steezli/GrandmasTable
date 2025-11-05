@@ -89,17 +89,42 @@ cd GrandmasTable
    ```env
    DB_HOST=localhost
    DB_USER=root
-   DB_PASSWORD=your_mysql_password
+   DB_PASSWORD=
    DB_NAME=grandmas_table
    JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
    PORT=3000
    ```
 
    **Important:** 
-   - Replace `your_mysql_password` with your actual MySQL root password
-   - Replace `your_super_secret_jwt_key_change_this_in_production` with a strong random string (for production, use a secure random key)
+   - Set `DB_PASSWORD` to your MySQL root password (leave empty if no password)
+   - Generate a secure JWT_SECRET (see below)
 
-4. **Install backend dependencies**
+4. **Generate JWT_SECRET**
+
+   You need a secure random string for JWT_SECRET. Here are several ways to generate one:
+
+   **Option 1: Using Node.js (recommended)**
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+   ```
+
+   **Option 2: Using OpenSSL**
+   ```bash
+   openssl rand -hex 64
+   ```
+
+   **Option 3: Using Python**
+   ```bash
+   python3 -c "import secrets; print(secrets.token_hex(64))"
+   ```
+
+   **Option 4: Using online generator**
+   - Visit https://generate-secret.vercel.app/64 (or similar)
+   - Copy the generated string
+
+   Copy the generated string and paste it as the value for `JWT_SECRET` in your `.env` file.
+
+5. **Install backend dependencies**
 
    ```bash
    npm install
@@ -320,9 +345,9 @@ npm run preview    # Preview production build
 |----------|-------------|----------|
 | `DB_HOST` | MySQL host | Yes |
 | `DB_USER` | MySQL username | Yes |
-| `DB_PASSWORD` | MySQL password | Yes |
+| `DB_PASSWORD` | MySQL password (leave empty if no password) | Yes |
 | `DB_NAME` | Database name | Yes |
-| `JWT_SECRET` | Secret key for JWT tokens | Yes |
+| `JWT_SECRET` | Secret key for JWT tokens (generate using methods in Step 3) | Yes |
 | `PORT` | Server port | No (default: 3000) |
 
 ## Next Steps
