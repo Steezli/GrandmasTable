@@ -2,6 +2,20 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Validate required environment variables
+const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_NAME', 'JWT_SECRET'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:');
+  missingVars.forEach(varName => {
+    console.error(`   - ${varName}`);
+  });
+  console.error('\nPlease check your .env file in the backend directory.');
+  console.error('See README.md for setup instructions.');
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 

@@ -79,10 +79,11 @@ cd GrandmasTable
 2. **Create `.env` file**
 
    ```bash
-   cp .env.example .env
-   # Or create manually:
+   # Create .env file manually:
    touch .env
    ```
+
+   **Note:** If you see `.env.example`, you can copy it: `cp .env.example .env`
 
 3. **Edit `.env` file** with your database credentials:
 
@@ -278,9 +279,11 @@ See `backend/README.md` for detailed API documentation.
 - Change `PORT` in `backend/.env` to a different port (e.g., `3001`)
 - Update frontend proxy in `frontend/vite.config.js` to match new port
 
-**Error: "JWT_SECRET is required"**
-- Ensure `.env` file exists in `backend/` directory
-- Check that `JWT_SECRET` is set in `.env`
+   **Error: "JWT_SECRET is required" or "secretOrPrivateKey must have a value"**
+   - Ensure `.env` file exists in `backend/` directory
+   - Check that `JWT_SECRET` is set in `.env` (not empty)
+   - Generate a JWT_SECRET using one of the methods in Step 3
+   - Restart the backend server after updating `.env`
 
 ### Frontend Issues
 
