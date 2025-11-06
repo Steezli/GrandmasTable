@@ -118,7 +118,20 @@ export default {
       await this.loadRecipes();
     }
   },
+  activated() {
+    // Refresh recipes when returning to this view (e.g., after creating recipe)
+    // This works with keep-alive, but if not available, we'll use route watcher instead
+    if (this.activeFamily) {
+      this.loadRecipes();
+    }
+  },
   watch: {
+    '$route'(to, from) {
+      // Refresh recipes when navigating to Dashboard (e.g., after creating recipe)
+      if (to.name === 'Dashboard' && from.name && from.name !== 'Dashboard' && this.activeFamily) {
+        this.loadRecipes();
+      }
+    },
     activeFamily: {
       handler(newFamily) {
         if (newFamily) {

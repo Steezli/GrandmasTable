@@ -406,22 +406,35 @@ export default {
           categories: this.form.categories
         };
 
-        if (this.isEdit) {
-          await recipeService.updateRecipe(this.$route.params.id, recipeData);
-          if (this.$toast) {
-            this.$toast.success('Recipe updated successfully!');
+        let response;
+        try {
+          if (this.isEdit) {
+            response = await recipeService.updateRecipe(this.$route.params.id, recipeData);
+            if (this.$toast && response) {
+              this.$toast.success('Recipe updated successfully!');
+            }
+          } else {
+            response = await recipeService.createRecipe(this.activeFamily.id, recipeData);
+            if (this.$toast && response) {
+              this.$toast.success('Recipe created successfully!');
+            }
           }
-        } else {
-          await recipeService.createRecipe(this.activeFamily.id, recipeData);
-          if (this.$toast) {
-            this.$toast.success('Recipe created successfully!');
-          }
-        }
 
-        this.unsavedChanges = false;
-        this.$router.push({ name: 'Dashboard' });
+          // Only navigate if response is successful
+          if (response) {
+            this.unsavedChanges = false;
+            this.$router.push({ name: 'Dashboard' }).catch(err => {
+              // Router navigation error - log but don't show error to user
+              console.error('Navigation error:', err);
+            });
+          }
+        } catch (apiError) {
+          // Re-throw API errors to outer catch block
+          throw apiError;
+        }
       } catch (error) {
-        this.generalError = error.message || 'Failed to save recipe';
+        // Show error message
+        this.generalError = error.message || error.code || 'Failed to save recipe';
         if (this.$toast) {
           this.$toast.error(this.generalError);
         }

@@ -16,7 +16,7 @@
           class="instruction-textarea"
           placeholder="Enter instruction step"
           rows="2"
-          @input="updateInstructions"
+          @blur="updateInstructions"
         ></textarea>
         <Button
           type="button"
@@ -64,12 +64,17 @@ export default {
   emits: ['update:modelValue'],
   data() {
     return {
-      instructions: []
+      instructions: [],
+      isInternalEdit: false
     };
   },
   watch: {
     modelValue: {
       handler(newValue) {
+        // Don't reset if we're in the middle of an internal edit
+        if (this.isInternalEdit) {
+          return;
+        }
         this.instructions = newValue.length > 0
           ? newValue.map(inst => ({
               instruction: typeof inst === 'string' ? inst : inst.instruction || ''
@@ -82,14 +87,18 @@ export default {
   },
   methods: {
     addInstruction() {
+      this.isInternalEdit = true;
       this.instructions.push({ instruction: '' });
-      this.updateInstructions();
+      this.isInternalEdit = false;
+      // Don't emit update when adding empty instruction - let user fill it first
     },
     removeInstruction(index) {
+      this.isInternalEdit = true;
       this.instructions.splice(index, 1);
       if (this.instructions.length === 0) {
         this.instructions = [{ instruction: '' }];
       }
+      this.isInternalEdit = false;
       this.updateInstructions();
     },
     updateInstructions() {

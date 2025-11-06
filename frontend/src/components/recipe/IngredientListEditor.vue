@@ -14,14 +14,14 @@
           v-model="ingredient.quantity"
           placeholder="Quantity (e.g., 1 cup)"
           class="ingredient-quantity-input"
-          @input="updateIngredients"
+          @blur="updateIngredients"
         />
         <Input
           v-model="ingredient.ingredient"
           placeholder="Ingredient name"
           required
           class="ingredient-name-input"
-          @input="updateIngredients"
+          @blur="updateIngredients"
         />
         <Button
           type="button"
@@ -71,12 +71,17 @@ export default {
   emits: ['update:modelValue'],
   data() {
     return {
-      ingredients: []
+      ingredients: [],
+      isInternalEdit: false
     };
   },
   watch: {
     modelValue: {
       handler(newValue) {
+        // Don't reset if we're in the middle of an internal edit
+        if (this.isInternalEdit) {
+          return;
+        }
         this.ingredients = newValue.length > 0
           ? [...newValue]
           : [{ quantity: '', ingredient: '' }];
@@ -87,14 +92,18 @@ export default {
   },
   methods: {
     addIngredient() {
+      this.isInternalEdit = true;
       this.ingredients.push({ quantity: '', ingredient: '' });
-      this.updateIngredients();
+      this.isInternalEdit = false;
+      // Don't emit update when adding empty ingredient - let user fill it first
     },
     removeIngredient(index) {
+      this.isInternalEdit = true;
       this.ingredients.splice(index, 1);
       if (this.ingredients.length === 0) {
         this.ingredients = [{ quantity: '', ingredient: '' }];
       }
+      this.isInternalEdit = false;
       this.updateIngredients();
     },
     updateIngredients() {
