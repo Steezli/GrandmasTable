@@ -196,7 +196,14 @@ export default {
       this.$router.push({ name: 'RecipeEdit', params: { id: this.recipe.id } });
     },
     async handlePublish() {
-      if (!this.recipe) return;
+      // Defensive checks to ensure recipe is fully initialized
+      if (!this.recipe || !this.recipe.id) {
+        this.error = 'Recipe not loaded';
+        if (this.$toast) {
+          this.$toast.error('Recipe not loaded. Please try again.');
+        }
+        return;
+      }
       
       try {
         await recipeService.updateRecipe(this.recipe.id, {

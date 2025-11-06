@@ -196,6 +196,16 @@
               {{ isEdit ? 'Update Recipe' : 'Create Recipe' }}
             </Button>
             <Button
+              v-if="isEdit && isDraft"
+              type="button"
+              @click="handlePublish"
+              :loading="loading"
+              variant="primary"
+              class="publish-button"
+            >
+              Publish Recipe
+            </Button>
+            <Button
               type="button"
               @click="goBack"
               variant="outline"
@@ -263,6 +273,9 @@ export default {
     },
     activeFamily() {
       return familyStore.activeFamily;
+    },
+    isDraft() {
+      return this.form.status === 'draft';
     }
   },
   async mounted() {
@@ -435,6 +448,39 @@ export default {
       } catch (error) {
         // Show error message
         this.generalError = error.message || error.code || 'Failed to save recipe';
+        if (this.$toast) {
+          this.$toast.error(this.generalError);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+    async handlePublish() {
+      if (!this.isEdit || !this.$route.params.id) {
+        return;
+      }
+
+      this.loading = true;
+
+      try {
+        await recipeService.updateRecipe(this.$route.params.id, {
+          status: 'published'
+        });
+        
+        // Update local form status
+        this.form.status = 'published';
+        
+        if (this.$toast) {
+          this.$toast.success('Recipe published successfully!');
+        }
+        
+        this.unsavedChanges = false;
+        // Navigate back to recipe detail or dashboard
+        this.$router.push({ name: 'RecipeDetail', params: { id: this.$route.params.id } }).catch(err => {
+          console.error('Navigation error:', err);
+        });
+      } catch (error) {
+        this.generalError = error.message || 'Failed to publish recipe';
         if (this.$toast) {
           this.$toast.error(this.generalError);
         }
