@@ -840,7 +840,7 @@ router.patch('/:recipeId', authenticateToken, async (req, res, next) => {
         [recipeId]
       );
 
-      const recipe = updatedRecipes[0];
+      const updatedRecipe = updatedRecipes[0];
 
       // Get all related data
       const [ingredientsData] = await pool.execute(
@@ -870,25 +870,25 @@ router.patch('/:recipeId', authenticateToken, async (req, res, next) => {
 
       const [creatorsData] = await pool.execute(
         'SELECT id, name FROM users WHERE id = ?',
-        [recipe.created_by]
+        [updatedRecipe.created_by]
       );
 
       res.json({
-        id: recipe.id,
-        name: recipe.name,
-        description: recipe.description,
-        prep_time_minutes: recipe.prep_time_minutes,
-        cook_time_minutes: recipe.cook_time_minutes,
-        servings: recipe.servings,
-        is_public: recipe.is_public,
-        public_slug: recipe.public_slug,
-        notes: recipe.notes,
-        status: recipe.status,
-        created_at: recipe.created_at,
-        updated_at: recipe.updated_at,
+        id: updatedRecipe.id,
+        name: updatedRecipe.name,
+        description: updatedRecipe.description,
+        prep_time_minutes: updatedRecipe.prep_time_minutes,
+        cook_time_minutes: updatedRecipe.cook_time_minutes,
+        servings: updatedRecipe.servings,
+        is_public: updatedRecipe.is_public,
+        public_slug: updatedRecipe.public_slug,
+        notes: updatedRecipe.notes,
+        status: updatedRecipe.status,
+        created_at: updatedRecipe.created_at,
+        updated_at: updatedRecipe.updated_at,
         family: {
-          id: recipe.family_id,
-          name: recipe.family_name
+          id: updatedRecipe.family_id,
+          name: updatedRecipe.family_name
         },
         creator: creatorsData[0] ? {
           id: creatorsData[0].id,
