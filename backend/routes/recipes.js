@@ -213,6 +213,7 @@ router.get('/:recipeId', async (req, res, next) => {
       public_slug: recipe.public_slug,
       notes: recipe.notes,
       status: recipe.status,
+      created_by: recipe.created_by,
       created_at: recipe.created_at,
       updated_at: recipe.updated_at,
       family: {
@@ -320,6 +321,7 @@ router.get('/public/:slug', async (req, res, next) => {
       public_slug: recipe.public_slug,
       notes: recipe.notes,
       status: recipe.status,
+      created_by: recipe.created_by,
       created_at: recipe.created_at,
       updated_at: recipe.updated_at,
       family: {

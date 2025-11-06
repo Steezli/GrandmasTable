@@ -138,7 +138,8 @@ export default {
   computed: {
     isCreator() {
       if (!this.recipe || !authStore.user) return false;
-      return this.recipe.created_by === authStore.user.id;
+      // Convert both to strings for comparison (MySQL may return numbers)
+      return String(this.recipe.created_by) === String(authStore.user.id);
     },
     primaryPhoto() {
       if (!this.recipe || !this.recipe.photos) return null;

@@ -288,7 +288,7 @@ export default {
         const recipe = await recipeService.getRecipe(this.$route.params.id);
         
         // Check if user is creator
-        if (!authStore.user || recipe.created_by !== authStore.user.id) {
+        if (!authStore.user || String(recipe.created_by) !== String(authStore.user.id)) {
           this.$router.push({ name: 'Dashboard' });
           if (this.$toast) {
             this.$toast.error('You can only edit your own recipes');
