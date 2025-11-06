@@ -38,7 +38,13 @@
 
       <div class="recipe-actions" v-if="isCreator">
         <Button @click="goToEdit" variant="primary">Edit Recipe</Button>
+        <Button v-if="isDraft" @click="handlePublish" variant="primary">Publish Recipe</Button>
         <Button @click="handleDelete" variant="danger">Delete Recipe</Button>
+      </div>
+      <div v-if="isDraft" class="draft-notice">
+        <Card class="draft-notice-card">
+          <p>📝 This recipe is currently a draft. Edit it to make changes or publish it to make it available to your family.</p>
+        </Card>
       </div>
 
       <div class="recipe-content">
@@ -149,6 +155,9 @@ export default {
     },
     privacyText() {
       return this.isPublic ? 'Public' : 'Family Only';
+    },
+    isDraft() {
+      return this.recipe?.status === 'draft';
     }
   },
   async mounted() {
@@ -184,6 +193,25 @@ export default {
     },
     goToEdit() {
       this.$router.push({ name: 'RecipeEdit', params: { id: this.recipe.id } });
+    },
+    async handlePublish() {
+      if (!this.recipe) return;
+      
+      try {
+        await recipeService.updateRecipe(this.recipe.id, {
+          status: 'published'
+        });
+        if (this.$toast) {
+          this.$toast.success('Recipe published successfully!');
+        }
+        // Reload recipe to update status
+        await this.loadRecipe();
+      } catch (error) {
+        this.error = error.message || 'Failed to publish recipe';
+        if (this.$toast) {
+          this.$toast.error(this.error);
+        }
+      }
     },
     async handleDelete() {
       if (!confirm('Are you sure you want to delete this recipe? This action cannot be undone.')) {
@@ -297,6 +325,21 @@ export default {
 
 .recipe-date {
   font-style: italic;
+}
+
+.draft-notice {
+  margin: var(--spacing-md) 0;
+}
+
+.draft-notice-card {
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 2px solid rgba(255, 193, 7, 0.3);
+}
+
+.draft-notice-card p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-md);
 }
 
 .recipe-privacy-badge {

@@ -14,6 +14,10 @@
         <span class="privacy-icon">{{ privacyIcon }}</span>
         <span class="privacy-text">{{ privacyText }}</span>
       </div>
+      <div v-if="isDraft" class="recipe-status-badge recipe-status-draft">
+        <span class="status-icon">📝</span>
+        <span class="status-text">Draft</span>
+      </div>
     </div>
     <div class="recipe-content">
       <h3 class="recipe-name">{{ recipe.name }}</h3>
@@ -46,6 +50,9 @@ export default {
   computed: {
     isPublic() {
       return this.recipe.is_public || false;
+    },
+    isDraft() {
+      return this.recipe.status === 'draft';
     },
     privacyClass() {
       return this.isPublic ? 'privacy-public' : 'privacy-family';
@@ -138,6 +145,33 @@ export default {
 }
 
 .privacy-text {
+  font-size: var(--font-size-xs);
+}
+
+.recipe-status-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+.recipe-status-draft {
+  background-color: rgba(255, 193, 7, 0.9);
+  color: #000;
+}
+
+.status-icon {
+  font-size: var(--font-size-sm);
+}
+
+.status-text {
   font-size: var(--font-size-xs);
 }
 

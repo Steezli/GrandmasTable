@@ -107,9 +107,11 @@ export default {
       this.updateIngredients();
     },
     updateIngredients() {
-      // Filter out empty ingredients
+      // Keep ingredients that have either quantity or ingredient name filled
+      // Only filter out completely empty ingredients
       const validIngredients = this.ingredients.filter(
-        ing => ing.ingredient && ing.ingredient.trim().length > 0
+        ing => (ing.quantity && ing.quantity.trim().length > 0) || 
+               (ing.ingredient && ing.ingredient.trim().length > 0)
       );
       this.$emit('update:modelValue', validIngredients);
     }

@@ -39,6 +39,7 @@ router.get('/:familyId/recipes', authenticateToken, async (req, res, next) => {
         r.created_at,
         r.updated_at,
         r.is_public,
+        r.status,
         (SELECT photo_url FROM recipe_photos WHERE recipe_id = r.id AND is_primary = TRUE LIMIT 1) as primary_photo_url
       FROM recipes r
       WHERE r.family_id = ? AND r.deleted_at IS NULL
