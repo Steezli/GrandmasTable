@@ -1046,9 +1046,16 @@ router.get('/search', async (req, res, next) => {
     query += ` ORDER BY r.updated_at DESC`;
 
     // Pagination
-    const offset = (parseInt(page) - 1) * parseInt(limit);
-    query += ` LIMIT ? OFFSET ?`;
-    params.push(parseInt(limit), offset);
+    // LIMIT and OFFSET must be integers in SQL, not parameterized
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 20;
+    const offset = (pageNum - 1) * limitNum;
+    
+    // Ensure limit and offset are positive integers
+    const safeLimit = Math.max(1, Math.min(limitNum, 100)); // Between 1 and 100
+    const safeOffset = Math.max(0, offset); // Must be >= 0
+    
+    query += ` LIMIT ${safeLimit} OFFSET ${safeOffset}`;
 
     const [recipes] = await pool.execute(query, params);
 
