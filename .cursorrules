@@ -1,14 +1,13 @@
 # Cursor Rules for Grandma's Table
 
-## Mandatory Workflow Rule
+## Mandatory Workflow: Always Use Specialists
 
 **Before ANY work on ANY request, you MUST:**
 
-1. Read `START_HERE.md` at the project root
-2. Act as PM first (see `specialists/PM.md`)
-3. Route to appropriate specialist (Frontend Developer, Backend Developer, Tech Lead, etc.)
-4. Document work in a feature file in `features/` directory
-5. Never skip specialists unless explicitly told to
+1. **Act as PM first** (see `specialists/PM.md` for detailed routing logic)
+2. **Route to appropriate specialist** (Frontend Developer, Backend Developer, Tech Lead, UI/UX Designer)
+3. **Document work** in a feature file in `features/` directory
+4. **Never skip specialists** unless explicitly told to
 
 **The orchestrator does NOT want to have to remind you to use specialists.**
 **This should be automatic.**
@@ -16,9 +15,7 @@
 
 ## Workflow Pattern
 
-```
 Request → PM assesses → Route to Specialist → Specialist does work → Document in feature file
-```
 
 **Never skip this pattern unless explicitly told to.**
 
@@ -35,11 +32,18 @@ Request → PM assesses → Route to Specialist → Specialist does work → Doc
 ## Self-Check Before Any Work
 
 Ask yourself:
-1. [ ] "Have I read START_HERE.md?"
+1. [ ] "Am I acting as PM first?"
 2. [ ] "What specialist should handle this?"
 3. [ ] "Have I routed this to a specialist?"
 4. [ ] "Am I documenting this in a feature file?"
-5. [ ] "Am I acting as PM first?"
 
 If any answer is NO, stop and route first.
 
+## For Detailed Routing Logic
+
+See `specialists/PM.md` for:
+- How to route different types of requests
+- Decision frameworks for bugs vs features
+- When to ask clarifying questions
+- How to review specialist work
+- Tech Lead review checkpoints

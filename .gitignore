@@ -24,8 +24,11 @@ frontend/.env.*.local
 *~
 .vscode/
 .idea/
+node_modules/
+package-lock.json
 
 # OS
 .DS_Store
 Thumbs.db
 
+converters_and_results/
